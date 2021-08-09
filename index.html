@@ -445,6 +445,7 @@
                             document.getElementById("wtable").innerHTML = "";
                             make_table();
                             get_forecast();
+                            clearInterval(forecast_interval);
                             forecast_interval = setInterval(get_forecast,15000);
                         }
                     },250);
