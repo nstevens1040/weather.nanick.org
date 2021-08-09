@@ -454,8 +454,10 @@
             function nav_callback(p){
                 coords_obj.lat = p.coords.latitude + 0.008258641664184552;
                 coords_obj.lng = p.coords.longitude + 0.00919668671909335;
-                var geocoder = new google.maps.Geocoder();
-                geocoder.geocode({location: coords_obj}).then(geocoder_callback);
+                setTimeout(function(){
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({location: coords_obj}).then(geocoder_callback);
+                },250);
             }
             function responsive_ta(){
                 if(!document.getElementById("correct_address").value){
