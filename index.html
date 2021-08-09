@@ -123,6 +123,13 @@
                 lng: ""
             };
             var maddress,loc_address,forecast_interval;
+            function defer(method,condition){
+                if(condition){
+                    method()
+                } else {
+                    setTimeout(()=>{defer(method,condition);},100);
+                }
+            }
             function get_time_cdt(){
                 var date = new Date();
                 var h;
@@ -255,17 +262,24 @@
                                 }
                                 var cw = response_2;
                                 var current_icon = "https://www.wunderground.com/static/i/c/v4/" + cw.iconCode + ".svg"
-                                var current_img = document.createElement("img");
-                                current_img.height = "100";
-                                current_img.width = "100";
-                                current_img.src = current_icon;
+                                var svgexist = document.getElementById("currentsvg");
+                                if(svgexist){
+                                    if(svgexist.src != current_icon){
+                                        svgexist.src = current_icon;
+                                    }
+                                } else {
+                                    var current_img = document.createElement("img");
+                                    current_img.id = "currentsvg";
+                                    current_img.height = "100";
+                                    current_img.width = "100";
+                                    current_img.src = current_icon;
+                                }
                                 ["currenticon","Temperature_cell","Chance of Precipitation_cell","Wind Speed_cell","Barometric Pressure_cell"].forEach((i)=>{
                                     switch(i){
                                         case "currenticon":
-                                            if(document.getElementById(i).children[0]){
-                                                document.getElementById(i).children[0].parentElement.removeChild(document.getElementById(i).children[0]);
+                                            if(!svgexist){
+                                                document.getElementById(i).appendChild(current_img);
                                             }
-                                            document.getElementById(i).appendChild(current_img);
                                             break;
                                         case "Temperature_cell":
                                             document.getElementById(i).innerHTML = cw.temperature + '&deg;F';
@@ -334,20 +348,33 @@
                             } else {
                                 document.getElementById("Time").appendChild(th);
                             }
-                            var img = document.createElement("img");
-                            img.height = "100";
-                            img.width = "100";
-                            img.src = "https://www.wunderground.com/static/i/c/v4/" + r.iconCode[index] + ".svg"
-                            if(typeof(document.getElementById("icon").children[i]) != "undefined"){
-                                var e = document.getElementById("icon").children[i].firstChild.parentElement;
-                                e.removeChild(document.getElementById("icon").children[i].firstChild);
-                                e.appendChild(img);
+                            var svgsrc = "https://www.wunderground.com/static/i/c/v4/" + r.iconCode[index] + ".svg"
+                            var svgiexist = document.getElementById("svg" + index);
+                            if(svgiexist){
+                                if(svgiexist.src != svgsrc){
+                                    svgiexist.src = svgsrc
+                                }
                             } else {
+                                var img = document.createElement("img");
+                                img.id = "svg" + index;
+                                img.height = "100";
+                                img.width = "100";
+                                img.src = svgsrc;
                                 var tdicon = document.createElement("td");
                                 tdicon.classList.add("hourly");
                                 tdicon.appendChild(img);
                                 document.getElementById("icon").appendChild(tdicon);
                             }
+                            // if(typeof(document.getElementById("icon").children[i]) != "undefined"){
+                            //     var e = document.getElementById("icon").children[i].firstChild.parentElement;
+                            //     e.removeChild(document.getElementById("icon").children[i].firstChild);
+                            //     e.appendChild(img);
+                            // } else {
+                            //     var tdicon = document.createElement("td");
+                            //     tdicon.classList.add("hourly");
+                            //     tdicon.appendChild(img);
+                            //     document.getElementById("icon").appendChild(tdicon);
+                            // }
                             if(typeof(document.getElementById("Temperature").children[i]) != "undefined"){
                                 document.getElementById("Temperature").children[i].innerHTML = r.temperature[index] + '&deg;F';
                             } else {
@@ -385,26 +412,42 @@
                     }
                 });
             }
+            var geo_re;
             function geocoder_callback(response){
+                geo_re = response;
                 if(response.results[0]){
-                    var adr = response.results[0].address_components
-                    var street_number = adr.filter((a)=>{return (a.types.indexOf("street_number") != -1);})[0].short_name;
-                    var street_name = adr.filter((a)=>{return (a.types.indexOf("route") != -1);})[0].short_name;
-                    var city = adr.filter((a)=>{return (a.types.indexOf("locality") != -1);})[0].short_name;
-                    var state = adr.filter((a)=>{return (a.types.indexOf("administrative_area_level_1") != -1);})[0].short_name;
-                    var zip_code = adr.filter((a)=>{return (a.types.indexOf("postal_code") != -1);})[0].short_name;
-                    loc_address = street_number + " " + street_name + ", " + city + ", " + state + " " + zip_code;
-                    document.getElementById("address").innerHTML = loc_address;
-                    coords_obj.lat = response.results[0].geometry.location.lat();
-                    coords_obj.lng = response.results[0].geometry.location.lng();
-                    console.log(JSON.stringify({geocoding: loc_address}));
-                    console.log(JSON.stringify(coords_obj));
-                    if(document.getElementById("wtable").children){
-                        document.getElementById("wtable").innerHTML = "";
-                        make_table();
-                        get_forecast();
-                        forecast_interval = setInterval(get_forecast,15000);
-                    }
+                    setTimeout(()=>{
+                        var adr = response.results[0].address_components;
+                        var s,street_number,ro,street_name;
+                        var city = adr.filter((a)=>{return (a.types.indexOf("locality") != -1);})[0].short_name;
+                        var state = adr.filter((a)=>{return (a.types.indexOf("administrative_area_level_1") != -1);})[0].short_name;
+                        var zip_code = adr.filter((a)=>{return (a.types.indexOf("postal_code") != -1);})[0].short_name;
+                        sn = adr.filter((a)=>{return (a.types.indexOf("street_number") != -1);})[0];
+                        ro = adr.filter((a)=>{return (a.types.indexOf("route") != -1);})[0];
+                        if(!sn){
+                            s = adr.filter((a)=>{return (a.types.indexOf("transit_station") != -1);})[0]
+                            street_number = s.short_name;
+                        } else {
+                            street_number = sn.short_name;
+                        }
+                        if(ro){
+                            street_name = ro.short_name;
+                            loc_address = street_number + " " + street_name + ", " + city + ", " + state + " " + zip_code;
+                        } else {
+                            loc_address = street_number + ", " + city + ", " + state + " " + zip_code;
+                        }
+                        document.getElementById("address").innerHTML = loc_address;
+                        coords_obj.lat = response.results[0].geometry.location.lat();
+                        coords_obj.lng = response.results[0].geometry.location.lng();
+                        console.log(JSON.stringify({geocoding: loc_address}));
+                        console.log(JSON.stringify(coords_obj));
+                        if(document.getElementById("wtable").children){
+                            document.getElementById("wtable").innerHTML = "";
+                            make_table();
+                            get_forecast();
+                            forecast_interval = setInterval(get_forecast,15000);
+                        }
+                    },250);
                 }
             }
             function nav_callback(p){
