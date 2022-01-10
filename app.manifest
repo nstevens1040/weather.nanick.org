@@ -1,0 +1,28 @@
+﻿{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Hourly Weather | 15 day forecast",
+  "short_name": "Hourly Weather",
+  "start_url": "https://weather.nanick.org",
+  "description": "Hourly weather forecast for your current location spanning 15 days.",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/nstevens1040/resume/master/favicon.ico",
+      "sizes": "255x255",
+      "type": "image/x-icon",
+      "purpose": "any"
+    },
+    {
+      "src": "./favicon.svg",
+      "sizes": "255x255",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "weather",
+    "forecast",
+    "hourly",
+    "15 days"
+  ],
+  "display": "minimal-ui"
+}
