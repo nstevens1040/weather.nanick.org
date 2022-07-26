@@ -623,16 +623,18 @@
                 if (response.results[0]) {
                     setTimeout(()=>{
                         var adr = response.results[0].address_components;
-                        var s, street_number, ro, street_name;
+                        var s, street_number, ro, street_name,zip_code;
                         var city = adr.filter((a)=>{
                             return (a.types.indexOf("locality") != -1);
                         })[0].short_name;
                         var state = adr.filter((a)=>{
                             return (a.types.indexOf("administrative_area_level_1") != -1);
                         })[0].short_name;
-                        var zip_code = adr.filter((a)=>{
+                        if(adr.filter((a)=>{
                             return (a.types.indexOf("postal_code") != -1);
-                        })[0].short_name;
+                        }).length > 0){
+                            zip_code = adr.filter((a)=>{return (a.types.indexOf("postal_code") != -1);})[0].short_name;
+                        }
                         sn = adr.filter((a)=>{
                             return (a.types.indexOf("street_number") != -1);
                         })[0];
@@ -643,7 +645,9 @@
                             s = adr.filter((a)=>{
                                 return (a.types.indexOf("transit_station") != -1);
                             })[0]
-                            street_number = s.short_name;
+                            if(typeof(s) != "undefined"){
+                                street_number = s.short_name;
+                            }
                         } else {
                             street_number = sn.short_name;
                         }
