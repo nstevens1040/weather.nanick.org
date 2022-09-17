@@ -64,9 +64,13 @@
                 left: 0px;
                 height: 27px;
             }
-            html, body {
+            /* html, body {
                 overflow-y: hidden;
                 height: 100%;
+            } */
+            html, body {
+                height: auto;
+                overflow-y: auto;
             }
             body {
                 font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -92,6 +96,7 @@
                 color: white;
                 font-weight: normal;
                 border-spacing: 0em;
+                display: inline-block;
             }
             .tdhourly2 {
                 border-collapse: collapse;
@@ -238,7 +243,8 @@
             var geo_re;
             var zindex = 1;
             let map;
-            var maddress,loc_address,forecast_interval;
+            var maddress,loc_address,forecast_interval,query_place;
+            var first = true;
             function defer(method,condition){
                 if(condition){
                     method()
@@ -619,6 +625,10 @@
             var time_interval;
             var geo_re;
             function init_callback(response) {
+                if(query_place != null){
+                    query_place = null;
+                    first = false;
+                }
                 geo_re = response;
                 if (response.results[0]) {
                     setTimeout(()=>{
@@ -711,9 +721,15 @@
                 src_coords_obj.lng = p.coords.longitude + 0.00506400870054335;
                 setTimeout(function() {
                     var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode({
-                        location: src_coords_obj
-                    }).then(init_callback);
+                    if(query_place != null & first){
+                        geocoder.geocode({
+                            address: query_place
+                        }).then(init_callback);
+                    } else {
+                        geocoder.geocode({
+                            location: src_coords_obj
+                        }).then(init_callback);
+                    }
                 }, 250);
             }
             function initMap(){
@@ -805,6 +821,9 @@
                 }
             }
             document.addEventListener("DOMContentLoaded", ()=>{
+                if((new URL(document.location)).searchParams.get("loc")){
+                    query_place = (new URL(document.location)).searchParams.get("loc");
+                }
                 map = new google.maps.Map(document.getElementById("map"), {
                     mapTypeControlOptions: {
                         mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.TERRAIN]
@@ -822,7 +841,7 @@
                 document.getElementById("loc").style.display = "none";
                 document.getElementById("start").focus();
             }
-            var wrapped = false;
+            var wrapped = true;
             function wrapTable(x){
                 if(!wrapped){
                     [...document.body.getElementsByClassName("tdhourly")].forEach(i=>{
