@@ -821,8 +821,8 @@
                 }
             }
             document.addEventListener("DOMContentLoaded", ()=>{
-                if((new URL(document.location)).searchParams.get("loc")){
-                    query_place = (new URL(document.location)).searchParams.get("loc");
+                if((new URL(document.location)).searchParams.get("address")){
+                    query_place = (new URL(document.location)).searchParams.get("address");
                 }
                 map = new google.maps.Map(document.getElementById("map"), {
                     mapTypeControlOptions: {
