@@ -243,7 +243,7 @@
             var geo_re;
             var zindex = 1;
             let map;
-            var maddress,loc_address,forecast_interval,query_place;
+            var maddress,loc_address,forecast_interval;
             var first = true;
             function defer(method,condition){
                 if(condition){
@@ -625,10 +625,6 @@
             var time_interval;
             var geo_re;
             function init_callback(response) {
-                if(query_place != null){
-                    query_place = null;
-                    first = false;
-                }
                 geo_re = response;
                 if (response.results[0]) {
                     setTimeout(()=>{
@@ -721,15 +717,9 @@
                 src_coords_obj.lng = p.coords.longitude + 0.00506400870054335;
                 setTimeout(function() {
                     var geocoder = new google.maps.Geocoder();
-                    if(query_place != null & first){
-                        geocoder.geocode({
-                            address: query_place
-                        }).then(init_callback);
-                    } else {
-                        geocoder.geocode({
-                            location: src_coords_obj
-                        }).then(init_callback);
-                    }
+                    geocoder.geocode({
+                        location: src_coords_obj
+                    }).then(init_callback);
                 }, 250);
             }
             function initMap(){
@@ -821,9 +811,6 @@
                 }
             }
             document.addEventListener("DOMContentLoaded", ()=>{
-                if((new URL(document.location)).searchParams.get("loc")){
-                    query_place = (new URL(document.location)).searchParams.get("loc");
-                }
                 map = new google.maps.Map(document.getElementById("map"), {
                     mapTypeControlOptions: {
                         mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.TERRAIN]
