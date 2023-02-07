@@ -287,10 +287,18 @@
                 if (response.results[0]) {
                     setTimeout(()=>{
                         var adr = response.results[0].address_components;
-                        var s, street_number, ro, street_name,zip_code;
-                        var city = adr.filter((a)=>{
+                        var s, street_number, ro, street_name,zip_code,city;
+                        if(adr.filter((a)=>{
                             return (a.types.indexOf("locality") != -1);
-                        })[0].short_name;
+                        }).length > 0){
+                            city = adr.filter((a)=>{
+                                return (a.types.indexOf("locality") != -1);
+                            })[0].short_name;
+                        } else {
+                            city = adr.filter((a)=>{
+                                return (a.types.indexOf("postal_town") != -1);
+                            })[0].short_name;
+                        }
                         var state = adr.filter((a)=>{
                             return (a.types.indexOf("administrative_area_level_1") != -1);
                         })[0].short_name;
@@ -911,7 +919,7 @@
                                 var first_cell = makeFirstCell(cw);
                                 $.ajax({
                                     type: "GET",
-                                    url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=42.502305%2C-87.895016&units=e&language=en-US&format=json', //               //                    url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=' + src_coords_obj.lat + '%2C' + src_coords_obj.lng + '&units=e&language=en-US&format=json',
+                                    url: "https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&units=e&language=en-US&format=json", //               //                    url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=' + src_coords_obj.lat + '%2C' + src_coords_obj.lng + '&units=e&language=en-US&format=json',
                                     success: function(response_4){
                                         if(!response_4){
                                             return;
