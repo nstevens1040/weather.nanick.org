@@ -350,10 +350,14 @@
                             }
                             )[0].short_name;
                         } else {
-                            city = adr.filter( (a) => {
+                            if(adr.filter( (a) => {
                                 return (a.types.indexOf("postal_town") != -1);
+                            }).length > 0)
+                            {
+                                city = adr.filter( (a) => {
+                                    return (a.types.indexOf("postal_town") != -1);
+                                })[0].short_name;
                             }
-                            )[0].short_name;
                         }
                         var state = adr.filter( (a) => {
                             return (a.types.indexOf("administrative_area_level_1") != -1);
@@ -389,16 +393,56 @@
                         }
                         if (ro) {
                             street_name = ro.short_name;
-                            loc_address = street_number + " " + street_name + ", " + city + ", " + state + " " + zip_code;
+                            loc_address = "";
+                            if(typeof(street_number) != 'undefined'){
+                                loc_address = street_number;
+                            }
+                            if(typeof(street_name) != 'undefined'){
+                                loc_address+= " " + street_name;
+                            }
+                            if(typeof(city) != 'undefined'){
+                                loc_address+= ", " + city;
+                            }
+                            if(typeof(state) != 'undefined'){
+                                loc_address+= ", " + state;
+                            }
+                            if(typeof(zip_code) != 'undefined'){
+                                loc_address+= " " + zip_code;
+                            }
                         } else {
+                            loc_address = "";
                             if (!street_number) {
                                 if (!zip_code) {
-                                    loc_address = city + ", " + state;
+                                    if(typeof(city) != 'undefined'){
+                                        loc_address = city;
+                                    }
+                                    if(typeof(state) != 'undefined'){
+                                        loc_address+= ", " + state;
+                                    }
                                 } else {
-                                    loc_address = city + ", " + state + " " + zip_code;
+                                    if(typeof(city) != 'undefined'){
+                                        loc_address+= ", " + city;
+                                    }
+                                    if(typeof(state) != 'undefined'){
+                                        loc_address+= ", " + state;
+                                    }
+                                    if(typeof(zip_code) != 'undefined'){
+                                        loc_address+= " " + zip_code;
+                                    }
                                 }
                             } else {
-                                loc_address = street_number + ", " + city + ", " + state + " " + zip_code;
+                                if(typeof(street_number) != 'undefined'){
+                                    loc_address = street_number;
+                                }
+                                if(typeof(city) != 'undefined'){
+                                    loc_address+= ", " + city;
+                                }
+                                if(typeof(state) != 'undefined'){
+                                    loc_address+= ", " + state;
+                                }
+                                if(typeof(zip_code) != 'undefined'){
+                                    loc_address+= " " + zip_code;
+                                }
                             }
                         }
                         if (document.getElementById("start").style.display == "inline-block") {
