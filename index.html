@@ -460,8 +460,13 @@
                                 if (!tz_response) {
                                     return;
                                 }
+                                console.log(JSON.stringify(tz_response));
                                 tz_data = tz_response;
                                 tz_local = new Date().getTimezoneOffset() * 60 * 1000;
+                                if(typeof(tz_response.rawOffset) == 'undefined' || typeof(tz_response.dstOffset) == 'undefined'){
+                                    tz_response["rawOffset"] = 0;
+                                    tz_response["dstOffset"] = 0;
+                                }
                                 tz_offset = (tz_response.rawOffset + tz_response.dstOffset) * 1000;
                             }
                         });
