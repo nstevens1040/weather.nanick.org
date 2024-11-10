@@ -367,8 +367,9 @@
             }
         </style>
         <script type="application/javascript">
+            var startX, startY;
             var weather,map,pws_sorted,stationId,tz_data,query_place,hour_cell_width;
-	    var first = true;
+	        var first = true;
             if(window.outerWidth > 667){
                 hour_cell_width = 180;
             } else {
@@ -535,6 +536,29 @@
                     resize_event = event;
                     reRender();
                 }, true);
+                document.body.addEventListener('touchstart', function(event) {
+                    startX = event.touches[0].clientX;
+                    startY = event.touches[0].clientY;
+                });
+                document.body.addEventListener('touchend', function(event) {
+                    const endX = event.changedTouches[0].clientX;
+                    const endY = event.changedTouches[0].clientY;
+                    const deltaX = startX - endX;
+                    const deltaY = startY - endY;
+                    if (Math.abs(deltaX) > Math.abs(deltaY)){
+                        if(Math.abs(deltaX) > 150){
+                            if(deltaX > 0){
+                                if(document.getElementById("one-panel").computedStyleMap().get("display").value == "block"){
+                                    document.getElementById("two").checked = true;
+                                }
+                            } else {
+                                if(document.getElementById("two-panel").computedStyleMap().get("display").value == "block"){
+                                    document.getElementById("one").checked = true;
+                                }
+                            }
+                        }
+                    }
+                });
                 hourlytable2 = document.getElementById("hourlytable2");
                 wtable2 = document.getElementById("wtable2");
                 map = new google.maps.Map(document.getElementById("map"),{
@@ -558,7 +582,9 @@
                             dataType: "json"
                         });
                         if(response){
-                            return response;
+                            if(response.observations[0].imperial.temp){
+                                return response;
+                            }
                         }
                     } catch (error){
                         console.log("stationId " + stationId + " returned no content");
@@ -792,8 +818,8 @@
             var firstRenderHourly = true;
             var time_interval_2;
             function updateCellObjects(weather,offset){
-                for(var index_ = 1; index_ < weather.dayOfWeek.length; index_++){
-                    var id_index = index_ + offset;
+                for(var index_ = 0; index_ < weather.dayOfWeek.length; index_++){
+                    var id_index = index_ + offset + 1;
                     // console.log(id_index + " / " + (weather.dayOfWeek.length - 1 + offset));
                     updateTimeCell(weather["validTimeLocal"][index_],id_index);
                     updateIconCell(weather["iconCode"][index_],weather["wxPhraseShort"][index_] + " " + weather["temperature"][index_] + '&deg;F',id_index);
@@ -1119,9 +1145,9 @@
                                                     cell_objects_hourly = [];
                                                     var first_cell = makeFirstCell(cw,pws_data,"hourlytable2");
                                                     if(firstRenderHourly){
-                                                        makeCellObjects(hourly_response, first_cell,"hourlytable2",29);
+                                                        makeCellObjects(hourly_response, first_cell,"hourlytable2",28);
                                                     } else {
-                                                        updateCellObjects(hourly_response,29);
+                                                        updateCellObjects(hourly_response,28);
                                                     }
                                                 }
                                             });
@@ -1838,58 +1864,6 @@
                         break;
                 }
             }
-            function weather_() {
-                $.ajax({
-                    type: "GET",
-                    url: "https://api.weather.com/v3/location/point?apiKey=e1f10a1e78da46f5b10a1e78da96f525&language=en-US&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&format=json",
-                    success: function(response_1) {
-                        if (!response_1) {
-                            return;
-                        }
-                        var wu_geo = response_1;
-                        var station_id = wu_geo.location.pwsId;
-                        var pws_uri = "https://api.weather.com/v2/pws/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&units=e&stationId=" + station_id + "&format=json";
-                        $.ajax({
-                            type: "GET",
-                            url: pws_uri,
-                            success: function(response_3) {
-                                if (!response_3) {
-                                    return;
-                                }
-                                var pws = response_3;
-                            }
-                        });
-                        var cw_uri = "https://api.weather.com/v3/wx/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&language=en-US&units=e&format=json";
-                        $.ajax({
-                            type: "GET",
-                            url: cw_uri,
-                            success: function(response_2) {
-                                if (!response_2) {
-                                    return;
-                                }
-                                var cw = response_2;
-                                cell_objects = [];
-                                var first_cell = makeFirstCell(cw);
-                                $.ajax({
-                                    type: "GET",
-                                    url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=' + src_coords_obj.lat + "%2C" + src_coords_obj.lng + '&units=e&language=en-US&format=json',
-                                    //               //                    url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=' + src_coords_obj.lat + '%2C' + src_coords_obj.lng + '&units=e&language=en-US&format=json',
-                                    success: function(response_4) {
-                                        if (!response_4) {
-                                            return;
-                                        }
-                                        r = response_4;
-                                        weather = r;
-                                        makeCellObjects(weather, first_cell);
-                                        // renderTable(weather);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-
         </script>
     </head>
     <body>
