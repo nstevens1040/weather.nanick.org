@@ -1213,7 +1213,7 @@
                 var lon2 = destinationCoordinates.lng * radiansInOneDegree;
                 var lat_diff = lat2 - lat1;
                 var lon_diff = lon2 - lon1;
-                var a = Math.pow(Math.sin((lat_diff / 2),2)) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(lon_diff / 2),2);
+                var a = Math.pow(Math.sin(lat_diff / 2),2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(lon_diff / 2),2);
                 var c = 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1 - a));
                 var d = earthRadius * c;
                 return d;
