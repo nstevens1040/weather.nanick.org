@@ -367,6 +367,7 @@
             }
         </style>
         <script type="application/javascript">
+	    var startX, startY;
 	    var clientHeight,clientWidth;
             var weather,map,pws_sorted,stationId,tz_data;
             var hour_cell_width;
@@ -540,6 +541,29 @@
                         reRender();
                     }
                 }, true);
+		document.body.addEventListener('touchstart', function(event) {
+                    startX = event.touches[0].clientX;
+                    startY = event.touches[0].clientY;
+                });
+                document.body.addEventListener('touchend', function(event) {
+                    const endX = event.changedTouches[0].clientX;
+                    const endY = event.changedTouches[0].clientY;
+                    const deltaX = startX - endX;
+                    const deltaY = startY - endY;
+                    if (Math.abs(deltaX) > Math.abs(deltaY)){
+                        if(Math.abs(deltaX) > 150){
+                            if(deltaX > 0){
+                                if(document.getElementById("one-panel").computedStyleMap().get("display").value == "block"){
+                                    document.getElementById("two").checked = true;
+                                }
+                            } else {
+                                if(document.getElementById("two-panel").computedStyleMap().get("display").value == "block"){
+                                    document.getElementById("one").checked = true;
+                                }
+                            }
+                        }
+                    }
+                });
                 hourlytable2 = document.getElementById("hourlytable2");
                 wtable2 = document.getElementById("wtable2");
                 map = new google.maps.Map(document.getElementById("map"),{
