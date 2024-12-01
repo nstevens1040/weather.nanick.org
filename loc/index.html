@@ -367,9 +367,10 @@
             }
         </style>
         <script type="application/javascript">
+	    var clientHeight,clientWidth;
             var startX, startY;
             var weather,map,pws_sorted,stationId,tz_data,query_place,hour_cell_width;
-	        var first = true;
+	    var first = true;
             if(window.outerWidth > 667){
                 hour_cell_width = 180;
             } else {
@@ -532,9 +533,15 @@
                 if ((new URL(document.location)).searchParams.get("address")) {
                     query_place = (new URL(document.location)).searchParams.get("address");
                 }
+                clientHeight = document.documentElement.clientHeight;
+                clientWidth = document.documentElement.clientWidth;
                 window.addEventListener('resize', function(event) {
                     resize_event = event;
-                    reRender();
+                    if(document.documentElement.clientHeight != clientHeight | document.documentElement.clientWidth != clientWidth){
+                        clientHeight = document.documentElement.clientHeight;
+                        clientWidth = document.documentElement.clientWidth;
+                        reRender();
+                    }
                 }, true);
                 document.body.addEventListener('touchstart', function(event) {
                     startX = event.touches[0].clientX;
