@@ -367,6 +367,7 @@
             }
         </style>
         <script type="application/javascript">
+	    var clientHeight,clientWidth;
             var weather,map,pws_sorted,stationId,tz_data;
             var hour_cell_width;
             if(window.outerWidth > 667){
@@ -529,9 +530,15 @@
                 document.getElementById("start").focus();
             }
             document.addEventListener("DOMContentLoaded",()=>{
+		clientHeight = document.documentElement.clientHeight;
+                clientWidth = document.documentElement.clientWidth;
                 window.addEventListener('resize', function(event) {
                     resize_event = event;
-                    reRender();
+                    if(document.documentElement.clientHeight != clientHeight | document.documentElement.clientWidth != clientWidth){
+                        clientHeight = document.documentElement.clientHeight;
+                        clientWidth = document.documentElement.clientWidth;
+                        reRender();
+                    }
                 }, true);
                 hourlytable2 = document.getElementById("hourlytable2");
                 wtable2 = document.getElementById("wtable2");
