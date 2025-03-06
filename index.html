@@ -9,16 +9,16 @@
         <meta property="og:title" content="Weather" />
         <meta property="og:image" content="https://raw.githubusercontent.com/nstevens1040/tripweather/main/themoon.png" />
         <meta property="og:description" content="Weather.nanick.org uses Google Maps Service along with IBM Passport Advantage Weather Company Data to provide an hourly weather report for the requested location." />
-        <meta property="og:url" content="https://weather.nanick.org/" />
+        <meta property="og:url" content="https://weather.nanick.org" />
         <meta itemprop="image" content="https://raw.githubusercontent.com/nstevens1040/tripweather/main/themoon.png" />
-        <meta property="article:published_time" content="Saturday, October 26th, 2024, 10:27 PM" />
-        <meta property="article:modified_time" content="Saturday, October 26th, 2024, 10:27 PM" />
+        <meta property="article:published_time" content="Thursday, March 6th, 2025, 4:43 AM" />
+        <meta property="article:modified_time" content="Thursday, March 6th, 2025, 4:43 AM" />
         <meta property="article:tag" content="weather google ibm weather-forecast google-maps-api google-maps-javascript-api the-weather-company ibm-passport hourly forecast" />
         <meta property="twitter:locale" content="en_US" />
         <meta property="twitter:type" content="article" />
         <meta property="twitter:title" content="Weather" />
         <meta property="twitter:description" content="Weather.nanick.org uses Google Maps Service along with IBM Passport Advantage Weather Company Data to provide an hourly weather report for the requested location." />
-        <meta property="twitter:url" content="https://weather.nanick.org/" />
+        <meta property="twitter:url" content="https://weather.nanick.org" />
         <meta property="twitter:domain" content="weather.nanick.org" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="https://raw.githubusercontent.com/nstevens1040/tripweather/main/themoon.png" />
@@ -33,19 +33,22 @@
         <meta http-equiv="Content-Style-Type" content="text/css" />
         <meta http-equiv="Content-Script-Type" content="application/javascript" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="date" content="Oct. 26, 2024" />
-        <meta name="search_date" content="2024-10-26" />
-        <meta name="revised" content="Saturday, October 26th, 2024, 10:27 PM" />
+        <meta name="date" content="Mar. 06, 2025" />
+        <meta name="search_date" content="2025-03-06" />
+        <meta name="revised" content="Thursday, March 6th, 2025, 4:43 AM" />
         <meta name="rating" content="General" />
         <meta name="revisit-after" content="1 days" />
         <meta name="target" content="all" />
         <meta name="robots" content="index, follow" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="language" content="English" />
-        <meta name="copyright" content="Copyright 2024" />
+        <meta name="copyright" content="Copyright 2025" />
         <meta http-equiv="cache-control" content="no-cache" />
         <meta http-equiv="Pragma" content="no-cache" />
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script> <!-- Required for time scale -->
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
         <!--script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script-->
         <style type="text/css">
             @font-face {
@@ -294,7 +297,8 @@
                 width: fit-content;
                 /* max-width: 500px; */
                 border-radius: 3px;
-                overflow: hidden;
+                /*overflow: hidden;*/
+                /*overflow-x: scroll;*/
                 padding: 20px;
             }
 
@@ -302,6 +306,7 @@
                 display: none;
                 animation: fadein .8s;
                 width: fit-content;
+                /*overflow-x: scroll;*/
             }
 
             @keyframes fadein {
@@ -345,6 +350,20 @@
             .icon {
                 height: 100px;
                 width: 100px;
+            }
+
+            #temppanel {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                /*overflow-x: scroll;*/
+            }
+            canvas {
+                /*width: 100% !important;*/
+                width: 1080px !important;
+                height: 100% !important;
             }
             @media only screen and (max-width: 667px) {
                 .hourly {
@@ -531,7 +550,7 @@
                 document.getElementById("start").focus();
             }
             document.addEventListener("DOMContentLoaded",()=>{
-		clientHeight = document.documentElement.clientHeight;
+		        clientHeight = document.documentElement.clientHeight;
                 clientWidth = document.documentElement.clientWidth;
                 window.addEventListener('resize', function(event) {
                     resize_event = event;
@@ -541,7 +560,7 @@
                         reRender();
                     }
                 }, true);
-		document.body.addEventListener('touchstart', function(event) {
+		        document.body.addEventListener('touchstart', function(event) {
                     startX = event.touches[0].clientX;
                     startY = event.touches[0].clientY;
                 });
@@ -887,6 +906,176 @@
             //     }
             // }
             var offset_index;
+            var chart = false;
+            function makeChart(weather){
+                var update = false;
+                if(!document.getElementById('tempChart')){
+                    var c = document.createElement("canvas");
+                    c.id = 'tempChart';
+                    //c.style.overflowX = 'scroll';
+                    document.getElementById("temppanel").appendChild(c);  
+                } else {
+                    update = true;
+                }
+                var times_and_temps = [];
+                for(var i = 0; i < weather["validTimeLocal"].length; i++){
+                    var time_and_temp = {};
+                    time_and_temp["time"] = new Date(weather["validTimeLocal"][i]);
+                    time_and_temp["temp"] = weather["temperature"][i];
+                    times_and_temps.push(time_and_temp);
+                }
+                var labels = times_and_temps.map(d => d.time);
+                var temps = times_and_temps.map(d => d.temp);
+                document.getElementById('tempChart').height = 500
+                document.getElementById('tempChart').width = 1080;
+                var mintemp = Math.min(...temps);
+                var maxtemp = Math.max(...temps);
+                var minlabel = labels[temps.lastIndexOf(mintemp)];
+                var mindate = minlabel.toISOString().split('T')[0] + " " + minlabel.toLocaleTimeString();
+                var maxlabel = labels[temps.indexOf(maxtemp)];
+                var maxdate = maxlabel.toISOString().split('T')[0] + " " + maxlabel.toLocaleTimeString();
+                console.log("highest temp is " + maxtemp + "°F on " + maxdate);
+                console.log("lowest temp is " + mintemp + "°F on " + mindate);
+                var ctx = document.getElementById('tempChart').getContext('2d');
+                if(!update){
+                    chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Hourly Temperature (°F)',
+                                data: temps,
+                                borderColor: 'rgb(127,255,0)',
+                                backgroundColor: 'rgb(127,255,0)',
+                                tension: 0,
+                                pointRadius: 0
+                            }]
+                        },
+                        options: {
+                            animation: {
+                                duration: 0
+                            },
+                            hover: {
+                                animationDuration: 0
+                            },
+                            responsiveAnimationDuration: 0,
+                            responsive: false,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day', // Display major ticks per day
+                                        tooltipFormat: 'MMM d, HH:mm',
+                                        displayFormats: {
+                                            hour: 'MMM d, HH:mm'
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(128,128,128)'
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Date & Time'
+                                    },
+                                    ticks: {
+                                        color: "white"
+                                    },
+                                    suggestedMin: new Date(labels[0].getTime() - 86400000),
+                                    suggestedMax: new Date(labels[359].getTime() + 86400000)
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Temperature (°F)'
+                                    },
+                                    ticks: {
+                                        color: "white"
+                                    },
+                                    beginAtZero: false,
+                                    suggestedMin: Math.min(...temps) - 2,
+                                    suggestedMax: Math.max(...temps) + 2,
+                                    grid: {
+                                        color: 'rgba(128,128,128)'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    mode: 'nearest',
+                                    intersect: false
+                                },
+                                legend: {
+                                    display: false
+                                },
+                                annotation: {
+                                    annotations: {
+                                      	minLabel: {
+                                        	type: 'label',
+                            	            xValue: new Date(minlabel.getTime() + 14400000),
+                            	            yValue: mintemp - 3,
+                                    	    color: 'white',
+                                        	font: {
+                            	              size: 16,
+                                              family: "Chakra Petch"
+                                	        },
+                                    	    content: "Lowest temp is " + mintemp + "°F on " + mindate,
+                                        	padding: 0,
+                                            position: 'start'
+                            	        },
+                                        maxLabel: {
+                                        	type: 'label',
+                            	            xValue: new Date(maxlabel.getTime() + 14400000),
+                            	            yValue: maxtemp + 3,
+
+                                    	    color: 'white',
+                                        	font: {
+                            	              size: 16,
+                                              family: "Chakra Petch"
+                                	        },
+                                    	    content: "Highest temp is " + maxtemp + "°F on " + maxdate,
+                                        	padding: 0,
+                                            position: 'start'
+                            	        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    chart.data.labels = labels;
+                    chart.data.datasets[0].data = temps;
+                    chart.options.scales.y.suggestedMin = Math.min(...temps) - 2;
+                    chart.options.scales.y.suggestedMax = Math.max(...temps) + 2;
+                    chart.options.plugins.annotation.annotations.minLabel = {
+                        type: 'label',
+                        xValue: new Date(minlabel.getTime() + 14400000),
+                        yValue: mintemp - 3,
+                        color: 'white',
+                        font: {
+                          size: 16,
+                          family: "Chakra Petch"
+                        },
+                        content: "Lowest temp is " + mintemp + "°F on " + mindate,
+                        padding: 0,
+                        position: 'start'
+                    };
+                    chart.options.plugins.annotation.annotations.maxLabel = {
+                        type: 'label',
+                        xValue: new Date(maxlabel.getTime() + 14400000),
+                        yValue: maxtemp + 3,
+                        color: 'white',
+                        font: {
+                          size: 16,
+                          family: "Chakra Petch"
+                        },
+                        content: "Highest temp is " + maxtemp + "°F on " + maxdate,
+                        padding: 0,
+                        position: 'start'
+                    };
+                    chart.update("none");
+                }
+            }
             function makeCellObjects(weather, first_table,tableid,offset) {
                 // clearInterval(time_interval);
                 var this_row = [];
@@ -1147,6 +1336,7 @@
                                                     current_hourly = hourly_response;
                                                     cell_objects_hourly = [];
                                                     var first_cell = makeFirstCell(cw,pws_data,"hourlytable2");
+                                                    makeChart(hourly_response);
                                                     if(firstRenderHourly){
                                                         makeCellObjects(hourly_response, first_cell,"hourlytable2",29);
                                                     } else {
@@ -1950,9 +2140,11 @@
         <div class="warpper">
             <input class="radio" id="one" name="group" type="radio" checked>
             <input class="radio" id="two" name="group" type="radio">
+            <input class="radio" id="three" name="group" type="radio">
             <div class="tabs">
                 <label class="tab" id="one-tab" for="one">15 MINUTE</label>
                 <label class="tab" id="two-tab" for="two">HOURLY</label>
+                <label class="tab" id="three-tab" for="three">TEMPERATURE CHART</label>
             </div>
             <div class="panels">
                 <div class="panel" id="one-panel">
@@ -1960,6 +2152,11 @@
                 </div>
                 <div class="panel" id="two-panel">
                     <div id="hourlytable2" class="collapsedtable" style="height: 0px;"></div>
+                </div>
+                <div class="panel" id="three-panel">
+                    <div id="temppanel" class="collapsedtable">
+                        
+                    </div>
                 </div>
             </div>
         </div>
