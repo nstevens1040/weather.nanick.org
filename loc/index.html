@@ -349,6 +349,23 @@
                 height: 100px;
                 width: 100px;
             }
+            #temppanel {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                /*overflow-x: scroll;*/
+            }
+            canvas {
+                /*width: 100% !important;*/
+                /*width: 1080px !important;*/
+                min-height: 500px;
+                max-height: 500px;
+                min-width: 1420px;
+                max-width: 1420px;
+                height: 100% !important;
+            }
             @media only screen and (max-width: 667px) {
                 .hourly {
                     min-width: 90px;
@@ -914,8 +931,8 @@
                 }
                 var labels = times_and_temps.map(d => d.time);
                 var temps = times_and_temps.map(d => d.temp);
-                document.getElementById('tempChart').height = 500
-                document.getElementById('tempChart').width = 1080;
+                document.getElementById('tempChart').height = 500;
+                document.getElementById('tempChart').width = 1420;
                 var mintemp = Math.min(...temps);
                 var maxtemp = Math.max(...temps);
                 var minlabel = labels[temps.lastIndexOf(mintemp)];
@@ -1001,7 +1018,7 @@
                                       	minLabel: {
                                         	type: 'label',
                             	            xValue: new Date(minlabel.getTime() + 14400000),
-                            	            yValue: mintemp - 3,
+                            	            yValue: mintemp - 2,
                                     	    color: 'white',
                                         	font: {
                             	              size: 16,
@@ -1014,7 +1031,7 @@
                                         maxLabel: {
                                         	type: 'label',
                             	            xValue: new Date(maxlabel.getTime() + 14400000),
-                            	            yValue: maxtemp + 3,
+                            	            yValue: maxtemp + 2,
 
                                     	    color: 'white',
                                         	font: {
@@ -1038,7 +1055,7 @@
                     chart.options.plugins.annotation.annotations.minLabel = {
                         type: 'label',
                         xValue: new Date(minlabel.getTime() + 14400000),
-                        yValue: mintemp - 3,
+                        yValue: mintemp - 2,
                         color: 'white',
                         font: {
                           size: 16,
@@ -1051,7 +1068,7 @@
                     chart.options.plugins.annotation.annotations.maxLabel = {
                         type: 'label',
                         xValue: new Date(maxlabel.getTime() + 14400000),
-                        yValue: maxtemp + 3,
+                        yValue: maxtemp + 2,
                         color: 'white',
                         font: {
                           size: 16,
