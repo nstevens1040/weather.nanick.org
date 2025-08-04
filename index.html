@@ -391,7 +391,8 @@
         <script type="application/javascript">
             var startX, startY;
             var clientHeight, clientWidth;
-            var weather, map, pws_sorted, stationId, tz_data;
+            var weather, map, pws_sorted, stationId, tz_data,query_place;
+            var first = true;
             var hour_cell_width;
             if (window.outerWidth > 667) {
                 hour_cell_width = 180;
@@ -567,6 +568,9 @@
                 document.getElementById("start").focus();
             }
             document.addEventListener("DOMContentLoaded", () => {
+                if ((new URL(document.location)).searchParams.get("address")) {
+                    query_place = (new URL(document.location)).searchParams.get("address");
+                }
                 clientHeight = document.documentElement.clientHeight;
                 clientWidth = document.documentElement.clientWidth;
                 window.addEventListener('resize', function(event) {
@@ -1561,6 +1565,10 @@
                 return loc_address;
             }
             function init_callback(response) {
+                if (query_place != null) {
+                    query_place = null;
+                    first = false;
+                }
                 geo_re = response;
                 if (response.results[0]) {
                     setTimeout( () => {
@@ -1751,9 +1759,15 @@
                 src_coords_obj.lng = p.coords.longitude;
                 setTimeout(function() {
                     var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode({
-                        location: src_coords_obj
-                    }).then(init_callback);
+                    if (query_place != null & first) {
+                        geocoder.geocode({
+                            address: query_place
+                        }).then(init_callback);
+                    } else {
+                        geocoder.geocode({
+                            location: src_coords_obj
+                        }).then(init_callback);
+                    }
                 }, 250);
             }
             function initMap() {
@@ -2138,4 +2152,3 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZpstuo1hvbPo6FKFTUr1r0dZbec8vW-g&v=weekly&libraries=places" defer></script>
     </body>
 </html>
-
