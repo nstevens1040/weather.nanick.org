@@ -11,8 +11,8 @@
         <meta property="og:description" content="Weather.nanick.org uses Google Maps Service along with IBM Passport Advantage Weather Company Data to provide an hourly weather report for the requested location."/>
         <meta property="og:url" content="https://weather.nanick.org"/>
         <meta itemprop="image" content="https://raw.githubusercontent.com/nstevens1040/tripweather/main/themoon.png"/>
-        <meta property="article:published_time" content="Saturday, August 2nd, 2025, 11:56 AM" />
-        <meta property="article:modified_time" content="Saturday, August 2nd, 2025, 11:56 AM" />
+        <meta property="article:published_time" content="Saturday, August 2nd, 2025, 11:56 AM"/>
+        <meta property="article:modified_time" content="Saturday, August 2nd, 2025, 11:56 AM"/>
         <meta property="article:tag" content="weather google ibm weather-forecast google-maps-api google-maps-javascript-api the-weather-company ibm-passport hourly forecast"/>
         <meta property="twitter:locale" content="en_US"/>
         <meta property="twitter:type" content="article"/>
@@ -33,9 +33,9 @@
         <meta http-equiv="Content-Style-Type" content="text/css"/>
         <meta http-equiv="Content-Script-Type" content="application/javascript"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="date" content="Aug. 02, 2025" />
-        <meta name="search_date" content="2025-08-02" />
-        <meta name="revised" content="Saturday, August 2nd, 2025, 11:56 AM" />
+        <meta name="date" content="Aug. 02, 2025"/>
+        <meta name="search_date" content="2025-08-02"/>
+        <meta name="revised" content="Saturday, August 2nd, 2025, 11:56 AM"/>
         <meta name="rating" content="General"/>
         <meta name="revisit-after" content="1 days"/>
         <meta name="target" content="all"/>
@@ -206,7 +206,6 @@
                 text-decoration: none;
             }
 
-
             #locdiv {
                 padding: 0px 2px 0px 2px;
                 background-color: blue;
@@ -249,9 +248,11 @@
             #formtable > tbody > tr:nth-child(2) > td {
                 padding: 5px;
             }
+
             #formtable > tbody > tr:nth-child(3) > td {
                 padding: 5px
             }
+
             .adrbtn {
                 padding: 3.4px 5px 3.4px 5px;
             }
@@ -263,6 +264,7 @@
             .expandedtable {
                 display: table;
             }
+
             #seemore:hover {
                 fill: rgb(157, 157, 157);
             }
@@ -333,6 +335,7 @@
                 white-space: nowrap;
                 width: fit-content;
             }
+
             .left {
                 width: 105px;
                 max-width: 105px;
@@ -359,6 +362,7 @@
                 max-width: 1420px;
                 height: 100% !important;
             }
+
             .alert {
                 color: white;
                 padding: 5px;
@@ -391,14 +395,9 @@
         <script type="application/javascript">
             var startX, startY;
             var clientHeight, clientWidth;
-            var weather, map, pws_sorted, stationId, tz_data,query_place;
+            var weather, map, pws_sorted, stationId, tz_data, query_place;
             var first = true;
             var hour_cell_width;
-            if (window.outerWidth > 667) {
-                hour_cell_width = 180;
-            } else {
-                hour_cell_width = 105;
-            }
             var cell_objects = [];
             var cell_objects_hourly = [];
             var bigrows = [];
@@ -536,7 +535,7 @@
             var root_div = document.createElement("div");
             var root_table = document.createElement("table");
             var root_row = document.createElement("tr");
-            function measureTextWithCanvas(text){
+            function measureTextWithCanvas(text) {
                 var can = document.createElement("canvas");
                 can.id = "canvas";
                 can.style.display = "none";
@@ -545,9 +544,10 @@
                 var ctx = canvas.getContext("2d");
                 ctx.font = "16px \"Chakra Petch\"";
                 m = ctx.measureText(text);
-                setTimeout(()=>{
+                setTimeout( () => {
                     document.body.removeChild(document.getElementById("canvas"));
-                },100);                
+                }
+                , 100);
                 return m.width;
             }
             function sortByDistance(a, b) {
@@ -568,8 +568,18 @@
                 document.getElementById("start").focus();
             }
             document.addEventListener("DOMContentLoaded", () => {
+                if(new URL(document.location).search){
+                    query_place = unescape(new URL(document.location).search.substring(1));
+                    console.log(`{"query_place": "${query_place}" }`);
+                }
                 if ((new URL(document.location)).searchParams.get("address")) {
                     query_place = (new URL(document.location)).searchParams.get("address");
+                    console.log(`{"query_place": "${query_place}" }`);
+                }
+                if (window.outerWidth > 667) {
+                    hour_cell_width = 180;
+                } else {
+                    hour_cell_width = 105;
                 }
                 clientHeight = document.documentElement.clientHeight;
                 clientWidth = document.documentElement.clientWidth;
@@ -1027,7 +1037,7 @@
                 }
             }
             var cell_tables = [];
-            async function getAlertDetails(detailKey){
+            async function getAlertDetails(detailKey) {
                 try {
                     var response = await $.ajax({
                         type: "GET",
@@ -1039,59 +1049,60 @@
                     } else {
                         return false;
                     }
-                } catch(error) {
+                } catch (error) {
                     console.log(error);
                 }
             }
             var fcell_b;
             var alertSwitch = 0;
-            function showDescription(x){
+            function showDescription(x) {
                 x.innerHTML = "<svg style=\"float: right;\" xmlns=\"http://www.w3.org/2000/svg\" height=\"26\" width=\"26\" viewBox=\"0 0 48 48\" fill=\"white\"><path d=\"M14.15 30.75 12 28.6l12-12 12 11.95-2.15 2.15L24 20.85Z\"></path></svg>";
                 x.title = "hide";
                 var fcell_a = x.parentElement;
                 fcell_a.getElementsByTagName("pre")[0].style.display = "block";
-                x.setAttribute("onclick","hideDescription(this);");
+                x.setAttribute("onclick", "hideDescription(this);");
             }
-            function hideDescription(x){
+            function hideDescription(x) {
                 x.innerHTML = "<svg style=\"float: right;\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"white\" viewBox=\"0 0 48 48\" height=\"26\" width=\"26\"><path d=\"m24 30.75-12-12 2.15-2.15L24 26.5l9.85-9.85L36 18.8Z\"></path></svg>";
                 x.title = "more info";
                 var fcell_a = x.parentElement;
                 fcell_a.getElementsByTagName("pre")[0].style.display = "none";
-                x.setAttribute("onclick","showDescription(this);");
+                x.setAttribute("onclick", "showDescription(this);");
             }
-            function createNewAlert(alarm){
+            function createNewAlert(alarm) {
                 var fcell_a = document.createElement("div");
-                fcell_a.setAttribute("data-detailKey",alarm.detailKey);
+                fcell_a.setAttribute("data-detailKey", alarm.detailKey);
                 fcell_a.classList.add("alert");
                 var showhide = document.createElement("a");
                 showhide.classList.add("showhide");
                 showhide.innerHTML = "<svg style=\"float: right;\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"white\" viewBox=\"0 0 48 48\" height=\"26\" width=\"26\"><path d=\"m24 30.75-12-12 2.15-2.15L24 26.5l9.85-9.85L36 18.8Z\"></path></svg>";
                 showhide.title = "more info";
-                showhide.setAttribute("onclick","showDescription(this);");
+                showhide.setAttribute("onclick", "showDescription(this);");
                 var verboseAlert = document.createElement("pre");
                 verboseAlert.style.display = "none";
                 getAlertDetails(alarm.detailKey).then(adet => {
                     verboseAlert.innerHTML = adet.alertDetail.texts[0].description;
-                });
+                }
+                );
                 var sev = alarm.severityCode;
-                switch(sev){
-                    case 1:
-                        fcell_a.style.border = "3px solid rgb(255,0,0)";
-                        break;
-                    case 2:
-                        fcell_a.style.border = "3px solid rgb(255,64,0)";
-                        break;
-                    case 3:
-                        fcell_a.style.border = "3px solid rgb(255,128,0)";
-                        break;
-                    case 4:
-                        fcell_a.style.border = "3px solid rgb(255,191,0)";
-                        break;
-                    case 5:
-                        fcell_a.style.border = "3px solid rgb(255,255,0)";
-                        break;
-                    default:
-                        break;
+                switch (sev) {
+                case 1:
+                    fcell_a.style.border = "3px solid rgb(255,0,0)";
+                    break;
+                case 2:
+                    fcell_a.style.border = "3px solid rgb(255,64,0)";
+                    break;
+                case 3:
+                    fcell_a.style.border = "3px solid rgb(255,128,0)";
+                    break;
+                case 4:
+                    fcell_a.style.border = "3px solid rgb(255,191,0)";
+                    break;
+                case 5:
+                    fcell_a.style.border = "3px solid rgb(255,255,0)";
+                    break;
+                default:
+                    break;
                 }
                 fcell_a.style.color = "rgb(255, 255, 255)";
                 fcell_a.innerHTML = `${alarm.headlineText}`;
@@ -1168,90 +1179,112 @@
                             getPlaceId(pws_coords);
                             $.ajax({
                                 type: "GET",
-                                url: `https://api.weather.com/v3/aggcommon/v3alertsHeadlines;v3-wx-observations-current;v3-location-point?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocodes=${src_coords_obj.lat }%2C${src_coords_obj.lng}&language=en-US&units=e&format=json`,
-                                success: function(agg){
-                                    if(agg[0].v3alertsHeadlines){
-                                        if(document.getElementById("alert")){
+                                url: `https://api.weather.com/v3/aggcommon/v3alertsHeadlines;v3-wx-observations-current;v3-location-point?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocodes=${src_coords_obj.lat}%2C${src_coords_obj.lng}&language=en-US&units=e&format=json`,
+                                success: function(agg) {
+                                    if (agg[0].v3alertsHeadlines) {
+                                        if (document.getElementById("alert")) {
                                             var fcell = document.getElementById("alert");
                                             var newkeys = [];
                                             var oldkeys = [];
                                             var removed = [];
                                             var added = [];
-                                            [...fcell.children].forEach(existing => { oldkeys.push(existing.dataset.detailkey); });
-                                            [...agg[0].v3alertsHeadlines.alerts].forEach(newh => { newkeys.push(newh.detailKey); });
+                                            [...fcell.children].forEach(existing => {
+                                                oldkeys.push(existing.dataset.detailkey);
+                                            }
+                                            );
+                                            [...agg[0].v3alertsHeadlines.alerts].forEach(newh => {
+                                                newkeys.push(newh.detailKey);
+                                            }
+                                            );
                                             oldkeys.filter(k => !newkeys.includes(k)).forEach(rem => {
-                                                var rem_fcell_a = [...fcell.children].filter(ele => { return (ele.dataset.detailkey.match(new RegExp(rem))); })[0]
+                                                var rem_fcell_a = [...fcell.children].filter(ele => {
+                                                    return (ele.dataset.detailkey.match(new RegExp(rem)));
+                                                }
+                                                )[0]
                                                 fcell.removeChild(rem_fcell_a);
                                                 removed.push(rem);
-                                            });
+                                            }
+                                            );
                                             var a = 0;
                                             newkeys.filter(k => !oldkeys.includes(k)).forEach(add => {
-                                                var add_fcell_a = [...agg[0].v3alertsHeadlines.alerts].filter(ele => { return (ele.detailKey.match(new RegExp(add))); })[0]
+                                                var add_fcell_a = [...agg[0].v3alertsHeadlines.alerts].filter(ele => {
+                                                    return (ele.detailKey.match(new RegExp(add)));
+                                                }
+                                                )[0]
                                                 var fcell_a = createNewAlert(add_fcell_a);
                                                 fcell_a.id = `alert${a}`;
                                                 fcell.appendChild(fcell_a);
                                                 added.push(add);
                                                 a++;
-                                            });
+                                            }
+                                            );
                                             newkeys.filter(k => oldkeys.includes(k)).forEach(remain => {
-                                                var fcell_a = [...fcell.children].filter(ele => { return (ele.dataset.detailkey.match(new RegExp(remain))); })[0];
-                                                var alarm =  [...agg[0].v3alertsHeadlines.alerts].filter(ele => { return (ele.detailKey.match(new RegExp(remain))); })[0]
+                                                var fcell_a = [...fcell.children].filter(ele => {
+                                                    return (ele.dataset.detailkey.match(new RegExp(remain)));
+                                                }
+                                                )[0];
+                                                var alarm = [...agg[0].v3alertsHeadlines.alerts].filter(ele => {
+                                                    return (ele.detailKey.match(new RegExp(remain)));
+                                                }
+                                                )[0]
                                                 var sev = alarm.severityCode;
                                                 var showhide = document.createElement("a");
                                                 showhide.classList.add("showhide");
                                                 showhide.innerHTML = "<svg style=\"float: right;\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"white\" viewBox=\"0 0 48 48\" height=\"26\" width=\"26\"><path d=\"m24 30.75-12-12 2.15-2.15L24 26.5l9.85-9.85L36 18.8Z\"></path></svg>";
                                                 showhide.title = "more info";
-                                                showhide.setAttribute("onclick","showDescription(this);");
+                                                showhide.setAttribute("onclick", "showDescription(this);");
                                                 var verboseAlert = document.createElement("pre");
                                                 verboseAlert.style.display = "none";
                                                 getAlertDetails(alarm.detailKey).then(adet => {
                                                     verboseAlert.innerHTML = adet.alertDetail.texts[0].description;
-                                                });
-                                                switch(sev){
-                                                    case 1:
-                                                        if(!fcell_a.style.border.match("3px solid rgb\\(255,0,0\\)")){
-                                                            fcell_a.style.border = "3px solid rgb(255,0,0)";
-                                                        }
-                                                        break;
-                                                    case 2:
-                                                        if(!fcell_a.style.border.match("3px solid rgb\\(255,64,0\\)")){
-                                                            fcell_a.style.border = "3px solid rgb(255,64,0)";
-                                                        }
-                                                        break;
-                                                    case 3:
-                                                        if(!fcell_a.style.border.match("3px solid rgb\\(255,128,0\\)")){
-                                                            fcell_a.style.border = "3px solid rgb(255,128,0)";
-                                                        }
-                                                        break;
-                                                    case 4:
-                                                        if(!fcell_a.style.border.match("3px solid rgb\\(255,191,0\\)")){
-                                                            fcell_a.style.border = "3px solid rgb(255,191,0)";
-                                                        }
-                                                        break;
-                                                    case 5:
-                                                        if(!fcell_a.style.border.match("3px solid rgb\\(255,255,0\\)")){
-                                                            fcell_a.style.border = "3px solid rgb(255,255,0)";
-                                                        }
-                                                        break;
-                                                    default:
-                                                        break;
+                                                }
+                                                );
+                                                switch (sev) {
+                                                case 1:
+                                                    if (!fcell_a.style.border.match("3px solid rgb\\(255,0,0\\)")) {
+                                                        fcell_a.style.border = "3px solid rgb(255,0,0)";
+                                                    }
+                                                    break;
+                                                case 2:
+                                                    if (!fcell_a.style.border.match("3px solid rgb\\(255,64,0\\)")) {
+                                                        fcell_a.style.border = "3px solid rgb(255,64,0)";
+                                                    }
+                                                    break;
+                                                case 3:
+                                                    if (!fcell_a.style.border.match("3px solid rgb\\(255,128,0\\)")) {
+                                                        fcell_a.style.border = "3px solid rgb(255,128,0)";
+                                                    }
+                                                    break;
+                                                case 4:
+                                                    if (!fcell_a.style.border.match("3px solid rgb\\(255,191,0\\)")) {
+                                                        fcell_a.style.border = "3px solid rgb(255,191,0)";
+                                                    }
+                                                    break;
+                                                case 5:
+                                                    if (!fcell_a.style.border.match("3px solid rgb\\(255,255,0\\)")) {
+                                                        fcell_a.style.border = "3px solid rgb(255,255,0)";
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
                                                 }
 
-                                                if(!(fcell_a.textContent.match(alarm.headlineText))){
+                                                if (!(fcell_a.textContent.match(alarm.headlineText))) {
                                                     fcell_a.innerHTML = "";
                                                     fcell_a.innerHTML = `${alarm.headlineText}`;
                                                     fcell_a.appendChild(showhide);
                                                     fcell_a.appendChild(verboseAlert);
                                                 }
-                                            });
+                                            }
+                                            );
                                         } else {
                                             var ftable = document.getElementById("formtable");
                                             var frow = document.createElement("tr");
                                             var fcell = document.createElement("td");
                                             frow.id = "alertrow";
                                             fcell.id = "alert";
-                                            fcell.setAttribute("colspan",3);
-                                            for(var a = 0; a < agg[0].v3alertsHeadlines.alerts.length; a++){
+                                            fcell.setAttribute("colspan", 3);
+                                            for (var a = 0; a < agg[0].v3alertsHeadlines.alerts.length; a++) {
                                                 var alarm = agg[0].v3alertsHeadlines.alerts[a];
                                                 var fcell_a = createNewAlert(alarm);
                                                 fcell_a.id = `alert${a}`;
@@ -1261,7 +1294,7 @@
                                             ftable.tBodies[0].appendChild(frow);
                                         }
                                     } else {
-                                        if(document.getElementById("alert")){
+                                        if (document.getElementById("alert")) {
                                             document.getElementById("formtable").tBodies[0].removeChild(document.getElementById("alertrow"));
                                         }
                                     }
@@ -1439,18 +1472,15 @@
                             document.getElementById("pwsloc").appendChild(place_a);
                         }
                         old_coords = coords;
-                        var widths = [
-                            measureTextWithCanvas(document.getElementById("address").innerText.trim()),
-                            measureTextWithCanvas(document.getElementById("pwslink").innerText.trim()),
-                            measureTextWithCanvas(document.getElementById("pwsplace").innerText.trim())
-                        ];
+                        var widths = [measureTextWithCanvas(document.getElementById("address").innerText.trim()), measureTextWithCanvas(document.getElementById("pwslink").innerText.trim()), measureTextWithCanvas(document.getElementById("pwsplace").innerText.trim())];
                         widths.sort(sortWidths);
-                        var column_width  = widths[2];
-                        ["addrcell","pws","pwsloc"].forEach(id=>{
+                        var column_width = widths[2];
+                        ["addrcell", "pws", "pwsloc"].forEach(id => {
                             document.getElementById(id).style.width = `${column_width}px`;
                             document.getElementById(id).style.minWidth = `${column_width}px`;
                             document.getElementById(id).style.maxWidth = `${column_width}px`;
-                        });
+                        }
+                        );
                     }
                 });
             }
@@ -1771,7 +1801,14 @@
                 }, 250);
             }
             function initMap() {
-                navigator.geolocation.getCurrentPosition(nav_callback);
+                if (query_place != null & first) {
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({
+                        address: query_place
+                    }).then(init_callback);
+                } else {
+                    navigator.geolocation.getCurrentPosition(nav_callback);
+                }
             }
             function updateIconCell(iconCode, caption, index) {
                 try {
@@ -2121,7 +2158,9 @@
                         <td class="toptd" id="pws"></td>
                     </tr>
                     <tr>
-                        <td class="toptd left"><span>PWS location: </span></td>
+                        <td class="toptd left">
+                            <span>PWS location: </span>
+                        </td>
                         <td class="toptd" id="pwsloc"></td>
                     </tr>
                 </table>
