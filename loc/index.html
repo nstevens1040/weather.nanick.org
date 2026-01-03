@@ -1412,7 +1412,7 @@
                 place_a.setAttribute("target", "blank_");
                 $.ajax({
                     type: "GET",
-                    url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords_string + "&key=AIzaSyClmcgH_cG784BsSUmsFmUksNDPPMFWdQI",
+                    url: "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords_string + "&key=AIzaSyBDR77N1sECVgn4ftqxBL8vVq-LSqfbpIk",
                     success: function(place) {
                         if (!place) {
                             return;
@@ -1700,7 +1700,7 @@
                         var ts = Math.floor(new Date().getTime() / 1000);
                         $.ajax({
                             type: "GET",
-                            url: "https://maps.googleapis.com/maps/api/timezone/json?language=en&location=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&timestamp=" + ts + "&format=json&key=AIzaSyClmcgH_cG784BsSUmsFmUksNDPPMFWdQI",
+                            url: "https://maps.googleapis.com/maps/api/timezone/json?language=en&location=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&timestamp=" + ts + "&format=json&key=AIzaSyBDR77N1sECVgn4ftqxBL8vVq-LSqfbpIk",
                             success: function(tz_response) {
                                 if (!tz_response) {
                                     return;
@@ -2153,5 +2153,6 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZpstuo1hvbPo6FKFTUr1r0dZbec8vW-g&v=weekly&libraries=places" defer></script>
     </body>
 </html>
+
 
 
