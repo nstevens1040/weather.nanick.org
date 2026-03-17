@@ -771,8 +771,8 @@
                 var mindate = minlabel.toISOString().split('T')[0] + " " + minlabel.toLocaleTimeString();
                 var maxlabel = labels[temps.indexOf(maxtemp)];
                 var maxdate = maxlabel.toISOString().split('T')[0] + " " + maxlabel.toLocaleTimeString();
-                console.log("highest temp is " + maxtemp + "Â°F on " + maxdate);
-                console.log("lowest temp is " + mintemp + "Â°F on " + mindate);
+                console.log("highest temp is " + maxtemp + "°F on " + maxdate);
+                console.log("lowest temp is " + mintemp + "°F on " + mindate);
                 var ctx = document.getElementById('tempChart').getContext('2d');
                 if (!update) {
                     chart = new Chart(ctx,{
@@ -856,7 +856,7 @@
                                                 size: 16,
                                                 family: "Chakra Petch"
                                             },
-                                            content: "Lowest temp is " + mintemp + "Â°F on " + mindate,
+                                            content: "Lowest temp is " + mintemp + "°F on " + mindate,
                                             padding: 0,
                                             position: 'start'
                                         },
@@ -893,7 +893,7 @@
                             size: 16,
                             family: "Chakra Petch"
                         },
-                        content: "Lowest temp is " + mintemp + "Â°F on " + mindate,
+                        content: "Lowest temp is " + mintemp + "°F on " + mindate,
                         padding: 0,
                         position: 'start'
                     };
@@ -906,7 +906,7 @@
                             size: 16,
                             family: "Chakra Petch"
                         },
-                        content: "Highest temp is " + maxtemp + "Â°F on " + maxdate,
+                        content: "Highest temp is " + maxtemp + "°F on " + maxdate,
                         padding: 0,
                         position: 'start'
                     };
