@@ -1950,7 +1950,8 @@
                                 tileSize: new google.maps.Size(256,256),
                                 maxZoom: 17,
                                 minZoom: 0,
-                                name: "WeatherRadar"
+                                name: "WeatherRadar",
+                                opacity: 0.5
                             });
                             await map.overlayMapTypes.setAt(0, radarMapType);
                             if(tsindex >= tsra_sorted.length){
