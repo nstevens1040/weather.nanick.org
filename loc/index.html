@@ -721,7 +721,7 @@
             var old_station_id;
             async function findClosestAvailablePWS(pws_list) {
                 for (var i = 0; i < pws_list.length; i++) {
-                    var stationId = pws_list[i][i].stationId;
+                    var stationId = pws_list[i].stationId;
                     try {
                         var response = await $.ajax({
                             type: "GET",
@@ -1226,20 +1226,23 @@
                         }
                         var pws_new = [];
                         for (var i = 0; i < pws.location.distanceMi.length; i++) {
-                            var station = {
-                                distanceKm: pws.location.distanceKm[i],
-                                distanceMi: pws.location.distanceMi[i],
-                                latitude: pws.location.latitude[i],
-                                longitude: pws.location.longitude[i],
-                                partnerId: pws.location.partnerId[i],
-                                qcStatus: pws.location.qcStatus[i],
-                                stationId: pws.location.stationId[i],
-                                stationName: pws.location.stationName[i],
-                                updateTimeUtc: pws.location.updateTimeUtc[i]
-                            };
-                            var dict = {};
-                            dict[i] = station;
-                            pws_new.push(dict);
+                            if(pws.location.qcStatus[i] > 0){
+                                var station = {
+                                    distanceKm: pws.location.distanceKm[i],
+                                    distanceMi: pws.location.distanceMi[i],
+                                    latitude: pws.location.latitude[i],
+                                    longitude: pws.location.longitude[i],
+                                    partnerId: pws.location.partnerId[i],
+                                    qcStatus: pws.location.qcStatus[i],
+                                    stationId: pws.location.stationId[i],
+                                    stationName: pws.location.stationName[i],
+                                    updateTimeUtc: pws.location.updateTimeUtc[i]
+                                };
+                                var dict = {};
+                                dict[i] = station;
+                                // pws_new.push(dict);
+                                pws_new.push(station);
+                            }
                         }
                         pws_new.sort(sortByDistance);
                         pws_sorted = pws_new;
