@@ -725,7 +725,7 @@
                     try {
                         var response = await $.ajax({
                             type: "GET",
-                            url: "https://api.weather.com/v2/pws/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&units=e&stationId=" + stationId + "&format=json",
+                            url: "https://api.weather.com/v2/pws/observations/current?apiKey=ff90f212a6984a7390f212a698ea73cc&units=e&stationId=" + stationId + "&format=json",
                             dataType: "json"
                         });
                         if (response.observations[0].imperial.temp) {
@@ -1141,7 +1141,7 @@
                 try {
                     var response = await $.ajax({
                         type: "GET",
-                        url: `https://api.weather.com/v3/alerts/detail?alertId=${detailKey}&format=json&language=en-US&apiKey=e1f10a1e78da46f5b10a1e78da96f525`,
+                        url: `https://api.weather.com/v3/alerts/detail?alertId=${detailKey}&format=json&language=en-US&apiKey=ff90f212a6984a7390f212a698ea73cc`,
                         dataType: "json"
                     });
                     if (response) {
@@ -1219,7 +1219,7 @@
                 var root_row = document.createElement("tr");
                 $.ajax({
                     type: "GET",
-                    url: "https://api.weather.com/v3/location/near?geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&product=pws&format=json&apiKey=e1f10a1e78da46f5b10a1e78da96f525",
+                    url: "https://api.weather.com/v3/location/near?geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&product=pws&format=json&apiKey=ff90f212a6984a7390f212a698ea73cc",
                     success: function(pws) {
                         if (!pws) {
                             return;
@@ -1285,7 +1285,7 @@
                             getPlaceId(pws_coords);
                             $.ajax({
                                 type: "GET",
-                                url: `https://api.weather.com/v3/aggcommon/v3alertsHeadlines;v3-wx-observations-current;v3-location-point?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocodes=${src_coords_obj.lat}%2C${src_coords_obj.lng}&language=en-US&units=e&format=json`,
+                                url: `https://api.weather.com/v3/aggcommon/v3alertsHeadlines;v3-wx-observations-current;v3-location-point?apiKey=ff90f212a6984a7390f212a698ea73cc&geocodes=${src_coords_obj.lat}%2C${src_coords_obj.lng}&language=en-US&units=e&format=json`,
                                 success: function(agg) {
                                     if (agg[0].v3alertsHeadlines) {
                                         if (document.getElementById("alert")) {
@@ -1406,7 +1406,7 @@
                                     }
                                     $.ajax({
                                         type: "GET",
-                                        url: "https://api.weather.com/v3/wx/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&language=en-US&units=e&format=json",
+                                        url: "https://api.weather.com/v3/wx/observations/current?apiKey=ff90f212a6984a7390f212a698ea73cc&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&language=en-US&units=e&format=json",
                                         success: function(cw) {
                                             if (!cw) {
                                                 return;
@@ -1419,7 +1419,7 @@
                                             }
                                             $.ajax({
                                                 type: "GET",
-                                                url: "https://api.weather.com/v3/wx/forecast/fifteenminute?geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&units=e&language=en-US&format=json&apiKey=e1f10a1e78da46f5b10a1e78da96f525",
+                                                url: "https://api.weather.com/v3/wx/forecast/fifteenminute?geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&units=e&language=en-US&format=json&apiKey=ff90f212a6984a7390f212a698ea73cc",
                                                 success: function(fifteen) {
                                                     if (!fifteen) {
                                                         return;
@@ -1432,7 +1432,7 @@
                                                     }
                                                     $.ajax({
                                                         type: "GET",
-                                                        url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=' + src_coords_obj.lat + "%2C" + src_coords_obj.lng + '&units=e&language=en-US&format=json',
+                                                        url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=ff90f212a6984a7390f212a698ea73cc&geocode=' + src_coords_obj.lat + "%2C" + src_coords_obj.lng + '&units=e&language=en-US&format=json',
                                                         success: function(hourly_response) {
                                                             if (!hourly_response) {
                                                                 return;
@@ -1989,7 +1989,7 @@
             var radarInterval;
             var isUpdating = false;
             function renderTiles(){
-                fetch("https://api.weather.com/v3/TileServer/series/productSet/PPAcore?cb=&filter=radar&apiKey=e1f10a1e78da46f5b10a1e78da96f525").then((resolve)=>{
+                fetch("https://api.weather.com/v3/TileServer/series/productSet/PPAcore?cb=&filter=radar&apiKey=ff90f212a6984a7390f212a698ea73cc").then((resolve)=>{
                     var j = resolve.json();
                     j.then((resolve2)=>{
                         json_result = resolve2;
@@ -2015,7 +2015,7 @@
                                         return "";
                                     }
                                     var z = map.zoom;
-                                    var uri = \`https://api.weather.com/v3/TileServer/tile/radar?ts=\${ts}&xyz=\${norm.x}:\${norm.y}:\${zoom}&apiKey=e1f10a1e78da46f5b10a1e78da96f525&tile-size=512\`;
+                                    var uri = \`https://api.weather.com/v3/TileServer/tile/radar?ts=\${ts}&xyz=\${norm.x}:\${norm.y}:\${zoom}&apiKey=ff90f212a6984a7390f212a698ea73cc&tile-size=512\`;
                                     return uri;
                                 },
                                 tileSize: new google.maps.Size(256,256),
@@ -2365,14 +2365,14 @@
             function weather_() {
                 $.ajax({
                     type: "GET",
-                    url: "https://api.weather.com/v3/location/point?apiKey=e1f10a1e78da46f5b10a1e78da96f525&language=en-US&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&format=json",
+                    url: "https://api.weather.com/v3/location/point?apiKey=ff90f212a6984a7390f212a698ea73cc&language=en-US&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&format=json",
                     success: function(response_1) {
                         if (!response_1) {
                             return;
                         }
                         var wu_geo = response_1;
                         var station_id = wu_geo.location.pwsId;
-                        var pws_uri = "https://api.weather.com/v2/pws/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&units=e&stationId=" + station_id + "&format=json";
+                        var pws_uri = "https://api.weather.com/v2/pws/observations/current?apiKey=ff90f212a6984a7390f212a698ea73cc&units=e&stationId=" + station_id + "&format=json";
                         $.ajax({
                             type: "GET",
                             url: pws_uri,
@@ -2383,7 +2383,7 @@
                                 var pws = response_3;
                             }
                         });
-                        var cw_uri = "https://api.weather.com/v3/wx/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&language=en-US&units=e&format=json";
+                        var cw_uri = "https://api.weather.com/v3/wx/observations/current?apiKey=ff90f212a6984a7390f212a698ea73cc&geocode=" + src_coords_obj.lat + "%2C" + src_coords_obj.lng + "&language=en-US&units=e&format=json";
                         $.ajax({
                             type: "GET",
                             url: cw_uri,
@@ -2396,7 +2396,7 @@
                                 var first_cell = makeFirstCell(cw);
                                 $.ajax({
                                     type: "GET",
-                                    url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=e1f10a1e78da46f5b10a1e78da96f525&geocode=' + src_coords_obj.lat + "%2C" + src_coords_obj.lng + '&units=e&language=en-US&format=json',
+                                    url: 'https://api.weather.com/v3/wx/forecast/hourly/15day?apiKey=ff90f212a6984a7390f212a698ea73cc&geocode=' + src_coords_obj.lat + "%2C" + src_coords_obj.lng + '&units=e&language=en-US&format=json',
                                     success: function(response_4) {
                                         if (!response_4) {
                                             return;
